@@ -37,6 +37,7 @@ python3 --version
 
 If the above doesnt return `python3.11` try using the command `python3.11` instead. If the cmd `python3.11` works, use that in place of every python command below. 
 
+YOU WILL GET SOME ERRORS ABOUT THE PYTHON VERSION, IGNORE THEM.
 
 After ensuring you have python run the following commands:
 ```bash
@@ -45,7 +46,7 @@ cd code
 python3 -m venv .venv
 source .venv/bin/activate
 python3 -m pip install --use-deprecated=legacy-resolver -r requirements.txt
-python3 -m pip install -e .
+python3 -m pip install --use-deprecated=legacy-resolver -e .
 python3 -m pip uninstall uvloop # b/c it causes issues with threading/loops
 ```
 
@@ -56,7 +57,7 @@ The following command will run vllm on gpu:0. The `--gpu-memory-utilization` fla
 
 
 ```bash
-sudo docker run -d -p 8028:8000  --gpus device=0 --ipc host --name mistral-instruct docker.io/vllm/vllm-openai:latest --model thesven/Mistral-7B-Instruct-v0.3-GPTQ --max-model-len 8912 --quantization gptq --dtype half --gpu-memory-utilization 0.5
+sudo docker run -d -p 8028:8000  --gpus device=0 --ipc host --name qwen14b docker.io/vllm/vllm-openai:latest --model Qwen/Qwen2.5-14B-Instruct-GPTQ-Int4 --max-model-len 16384 --dtype half --gpu-memory-utilization 0.8
 ```
 
 #### Setup Wandb 
