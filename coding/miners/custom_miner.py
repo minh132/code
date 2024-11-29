@@ -2,6 +2,7 @@ from coding.protocol import StreamCodeSynapse
 from typing import Awaitable
 import httpx
 import os
+from functools import partial
 
 CODE_ENDPOINT = os.environ.get("CODE_ENDPOINT", "http://localhost:8000/api")
 
@@ -24,7 +25,15 @@ async def miner_process(self, synapse: StreamCodeSynapse) -> Awaitable:
         response = {
             "response": synapse.prompt * 10,
         }
-    synapse.completion = response["response"]
+    async def _forward(response, send):
+        await send(
+            {
+                "type": "http.response.body",
+                "body": response["response"].encode("utf-8"),
+                "more_body": False,
+            }
+        )
+    token_streamer = partial(_forward, response)      
 
-    return synapse
+    return synapse.create_streaming_response(token_streamer)
     
